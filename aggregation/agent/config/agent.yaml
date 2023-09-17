@@ -1,0 +1,20 @@
+traces:
+  configs:
+    - name: default
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+              endpoint: "0.0.0.0:4317"
+            http:
+              endpoint: "0.0.0.0:4318"
+        jaeger:
+          protocols:
+            grpc:
+      remote_write:
+        - endpoint: "http://localhost:4318"
+          protocol: "http"
+          insecure: true
+      batch:
+        timeout: 5s
+        send_batch_size: 100
