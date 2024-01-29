@@ -1,4 +1,4 @@
-FROM grafana/grafana:10.1.1
+FROM grafana/grafana:10.3.1
 
 WORKDIR /etc/grafana/
 

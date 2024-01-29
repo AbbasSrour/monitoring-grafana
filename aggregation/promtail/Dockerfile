@@ -1,4 +1,4 @@
-FROM grafana/promtail:2.5.0
+FROM grafana/promtail:2.9.4
 
 WORKDIR /etc/promtail
 

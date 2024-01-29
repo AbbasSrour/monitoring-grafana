@@ -1,4 +1,4 @@
-FROM grafana/agent:v0.36.0
+FROM grafana/agent:v0.39.1
 
 WORKDIR /etc/agent/
 

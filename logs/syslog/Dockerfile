@@ -1,4 +1,4 @@
-FROM linuxserver/syslog-ng:3.30.1
+FROM linuxserver/syslog-ng:4.1.1
 
 WORKDIR /etc/syslog-ng
 

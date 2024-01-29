@@ -1,4 +1,4 @@
-FROM grafana/tempo:2.2.2
+FROM grafana/tempo:2.3.1
 
 WORKDIR /etc/tempo
 

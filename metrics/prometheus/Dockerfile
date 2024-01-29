@@ -1,4 +1,4 @@
-FROM prom/prometheus:v2.46.0
+FROM prom/prometheus:v2.49.1
 
 WORKDIR /etc/prometheus
 
