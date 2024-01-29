@@ -18,7 +18,7 @@ volumes:
   SyslogConfig: {}
 
 networks:
-  mof:
+  net:
     driver: bridge
 
 services:
@@ -40,7 +40,7 @@ services:
     expose:
       - 3000
     networks:
-      - mof
+      - net
     labels:
       org.label-schema.group: 'Visualization'
 
@@ -59,7 +59,7 @@ services:
     expose:
       - 9093
     networks:
-      - mof
+      - net
     labels:
       org.label-schema.group: 'Visualization'
 
@@ -72,7 +72,7 @@ services:
     expose:
       - 9090
     networks:
-      - mof
+      - net
     volumes:
       - PrometheusConfig:/etc/prometheus
       - PrometheusData:/prometheus
@@ -102,7 +102,7 @@ services:
     expose:
       - 8080
     networks:
-      - mof
+      - net
     labels:
       org.label-schema.group: 'Metrics'
 
@@ -113,7 +113,7 @@ services:
     expose:
       - 9091
     networks:
-      - mof
+      - net
     labels:
       org.label-schema.group: 'Metrics'
 
@@ -135,7 +135,7 @@ services:
     expose:
       - 9100
     networks:
-      - mof
+      - net
     labels:
       org.label-schema.group: 'Metrics'
 
@@ -149,7 +149,7 @@ services:
       - http://nginx:8081/stub_status
     restart: unless-stopped
     networks:
-      - mof
+      - net
     depends_on:
       nginx:
         condition: service_started
@@ -173,7 +173,7 @@ services:
     expose:
       - 3100
     networks:
-      mof:
+      - net
     labels:
       org.label-schema.group: 'Logging'
 
@@ -188,7 +188,7 @@ services:
       - SyslogConfig:/etc/syslog-ng
       - /var/log:/var/log
     networks:
-      mof:
+      - net
     ports:
       - protocol: udp
         published: 514
@@ -218,10 +218,8 @@ services:
       - 3200   # tempo
       - 4317   # otlp grpc
       - 4318   # otlp http
-      - 9411   # zipkin
-      - 14268  # jaeger ingest
     networks:
-      mof:
+      - net
     labels:
       org.label-schema.group: 'Traces'
 
@@ -240,7 +238,7 @@ services:
       - '-config.file=/etc/agent/agent.yaml'
     restart: always
     networks:
-      mof:
+      - net
     labels:
       org.label-schema.group: 'Aggregation'
 
@@ -261,7 +259,7 @@ services:
       - 9080
       - 1514
     networks:
-      mof:
+      - net
     restart: unless-stopped
     labels:
       org.label-schema.group: 'Aggregation'
@@ -273,34 +271,34 @@ services:
       dockerfile: Dockerfile
     container_name: nginx
     ports:
+      # grafana
       - protocol: tcp
         published: 5000
         target: 5000
+      # loki
       - protocol: tcp
         published: 3100
         target: 3100
+      # tempo
       - protocol: tcp
         published: 3200
         target: 3200
+      # tempo oltp grpc
       - protocol: tcp
         published: 4317
         target: 4317
+      # tempo oltp http
       - protocol: tcp
         published: 4318
         target: 4318
-      - protocol: tcp
-        published: 9411
-        target: 9411
-      - protocol: tcp
-        published: 14268
-        target: 14268
+      # prometheus
       - protocol: tcp
         published: 8081
         target: 8081
-#    volumes:
-#      - NginxConfig:/etc/nginx
+    volumes:
+      - NginxConfig:/etc/nginx
     networks:
-      - mof
+      - net
     restart: unless-stopped
     labels:
       org.label-schema.group: 'Network'
