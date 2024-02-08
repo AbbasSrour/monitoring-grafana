@@ -16,11 +16,15 @@ scrape_configs:
     static_configs:
       - targets: [ 'localhost:9090' ]
 
-  - job_name: 'fastapi'
+  - job_name: 'backend'
+    honor_timestamps: true
     scrape_interval: 10s
+    scrape_timeout: 10s
     metrics_path: /metrics
+    scheme: http
+    follow_redirects: true
     static_configs:
-      - targets: [ 'localhost:8000' ]
+      - targets: [ 'host.docker.internal:8000' ]
 
   - job_name: 'nodeexporter'
     scrape_interval: 5s
@@ -53,4 +57,4 @@ alerting:
       timeout: 10s
       api_version: v2
       static_configs:
-        - targets: [ 'localhost:9093' ]
+        - targets: [ 'alertmanager:9093' ]

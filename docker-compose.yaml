@@ -42,7 +42,7 @@ services:
     networks:
       - net
     labels:
-      org.label-schema.group: 'Visualization'
+      org.label-schema.group: 'observability'
 
   alertmanager:
     build:
@@ -61,7 +61,7 @@ services:
     networks:
       - net
     labels:
-      org.label-schema.group: 'Visualization'
+      org.label-schema.group: 'observability'
 
   ############################################ Metrics #######################################################
   prometheus:
@@ -77,7 +77,7 @@ services:
       - PrometheusConfig:/etc/prometheus
       - PrometheusData:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/tmp/prometheus'
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
@@ -85,7 +85,10 @@ services:
       - '--web.enable-lifecycle'
     restart: unless-stopped
     labels:
-      org.label-schema.group: 'Metrics'
+      org.label-schema.group: 'observability'
+    extra_hosts:
+      - "host.docker.internal: 172.17.0.1"
+
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.44.0
@@ -104,7 +107,7 @@ services:
     networks:
       - net
     labels:
-      org.label-schema.group: 'Metrics'
+      org.label-schema.group: 'observability'
 
   pushgateway:
     image: prom/pushgateway:v1.4.3
@@ -115,7 +118,7 @@ services:
     networks:
       - net
     labels:
-      org.label-schema.group: 'Metrics'
+      org.label-schema.group: 'observability'
 
   nodeexporter:
     image: prom/node-exporter:v1.3.1
@@ -137,7 +140,7 @@ services:
     networks:
       - net
     labels:
-      org.label-schema.group: 'Metrics'
+      org.label-schema.group: 'observability'
 
   nginxexporter:
     image: nginx/nginx-prometheus-exporter:0.10
@@ -154,7 +157,7 @@ services:
       nginx:
         condition: service_started
     labels:
-      org.label-schema.group: 'Metrics'
+      org.label-schema.group: 'observability'
 
   ############################################ Logging #######################################################
   loki:
@@ -175,7 +178,7 @@ services:
     networks:
       - net
     labels:
-      org.label-schema.group: 'Logging'
+      org.label-schema.group: 'observability'
 
   syslog-ng:
     build:
@@ -198,7 +201,7 @@ services:
         target: 601
     restart: always
     labels:
-      org.label-schema.group: 'logging'
+      org.label-schema.group: 'observability'
 
   ############################################ Traces ########################################################
   tempo:
@@ -216,12 +219,11 @@ services:
     restart: always
     expose:
       - 3200   # tempo
-      - 4317   # otlp grpc
       - 4318   # otlp http
     networks:
       - net
     labels:
-      org.label-schema.group: 'Traces'
+      org.label-schema.group: 'observability'
 
   ############################################ Aggregation ###################################################
   agent:
@@ -240,7 +242,7 @@ services:
     networks:
       - net
     labels:
-      org.label-schema.group: 'Aggregation'
+      org.label-schema.group: 'observability'
 
   promtail:
     build:
@@ -262,7 +264,7 @@ services:
       - net
     restart: unless-stopped
     labels:
-      org.label-schema.group: 'Aggregation'
+      org.label-schema.group: 'observability'
 
   ############################################# Network #######################################################
   nginx:
@@ -283,10 +285,6 @@ services:
       - protocol: tcp
         published: 3200
         target: 3200
-      # tempo oltp grpc
-      - protocol: tcp
-        published: 4317
-        target: 4317
       # tempo oltp http
       - protocol: tcp
         published: 4318
@@ -301,5 +299,5 @@ services:
       - net
     restart: unless-stopped
     labels:
-      org.label-schema.group: 'Network'
+      org.label-schema.group: 'server'
 
