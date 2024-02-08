@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 4,
+  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -447,14 +447,31 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
+          "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "(node_filesystem_size_bytes{fstype=\"ext4\", mountpoint=\"/home\"} - node_filesystem_free_bytes{fstype=\"ext4\", mountpoint=\"/home\"}) / node_filesystem_size_bytes{fstype=\"ext4\", mountpoint=\"/home\"}  * 100",
+          "expr": "(node_filesystem_size_bytes{fstype=\"btrfs\", mountpoint=\"/home\"} - node_filesystem_free_bytes{fstype=\"btrfs\", mountpoint=\"/home\"}) / node_filesystem_size_bytes{fstype=\"btrfs\", mountpoint=\"/home\"} * 100",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "interval": "30s",
           "intervalFactor": 1,
           "legendFormat": "",
           "range": true,
           "refId": "A",
-          "step": 30
+          "step": 30,
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "(node_filesystem_size_bytes{fstype=\"ext4\", mountpoint=\"/home\"} - node_filesystem_free_bytes{fstype=\"ext4\", mountpoint=\"/home\"}) / node_filesystem_size_bytes{fstype=\"ext4\", mountpoint=\"/home\"}  * 100",
+          "hide": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
         }
       ],
       "timeFrom": "10s",
@@ -954,10 +971,12 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{image!=\"\",container_label_org_label_schema_group=\"\"}[1m])) / scalar(count(node_cpu_seconds_total{mode=\"user\"})) * 100",
+          "editorMode": "code",
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{image!=\"\",container_label_org_label_schema_group!=\"observability\"}[1m])) / scalar(count(node_cpu_seconds_total{mode=\"user\"})) * 100",
           "intervalFactor": 10,
           "legendFormat": "{{ name }}",
           "metric": "container_cpu_user_seconds_total",
+          "range": true,
           "refId": "A",
           "step": 10
         }
@@ -1056,10 +1075,12 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by (name)(container_memory_usage_bytes{image!=\"\",container_label_org_label_schema_group=\"\"})",
+          "editorMode": "code",
+          "expr": "sum by (name)(container_memory_usage_bytes{image!=\"\", container_label_org_label_schema_group!=\"observability\"})",
           "intervalFactor": 1,
           "legendFormat": "{{ name }}",
           "metric": "container_memory_usage",
+          "range": true,
           "refId": "A",
           "step": 1
         }
@@ -1158,10 +1179,12 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by (name) (container_memory_cache{image!=\"\",container_label_org_label_schema_group=\"\"})",
+          "editorMode": "code",
+          "expr": "sum by (name) (container_memory_cache{image!=\"\",container_label_org_label_schema_group!=\"observability\"})",
           "intervalFactor": 2,
           "legendFormat": "{{name}}",
           "metric": "container_memory_cache",
+          "range": true,
           "refId": "A",
           "step": 2
         }
@@ -1201,6 +1224,8 @@
     {
       "aliasColors": {},
       "bars": false,
+      "dashLength": 10,
+      "dashes": false,
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -1208,7 +1233,14 @@
       "decimals": 2,
       "editable": true,
       "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "unitScale": true
+        },
+        "overrides": []
+      },
       "fill": 1,
+      "fillGradient": 0,
       "grid": {},
       "gridPos": {
         "h": 7,
@@ -1216,6 +1248,7 @@
         "x": 0,
         "y": 29
       },
+      "hiddenSeries": false,
       "id": 13,
       "legend": {
         "alignAsTable": true,
@@ -1232,11 +1265,16 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+      "pluginVersion": "10.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
+      "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
@@ -1245,15 +1283,18 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by (name) (rate(container_network_receive_bytes_total{image!=\"\",container_label_org_label_schema_group=\"\"}[1m]))",
+          "editorMode": "code",
+          "expr": "sum by (name) (rate(container_network_receive_bytes_total{image!=\"\",container_label_org_label_schema_group!=\"observability\"}[1m]))",
           "intervalFactor": 10,
           "legendFormat": "{{ name }}",
           "metric": "container_network_receive_bytes_total",
+          "range": true,
           "refId": "A",
           "step": 10
         }
       ],
       "thresholds": [],
+      "timeRegions": [],
       "title": "Container Network Input",
       "tooltip": {
         "msResolution": true,
@@ -1263,7 +1304,9 @@
       },
       "type": "graph",
       "xaxis": {
-        "show": true
+        "mode": "time",
+        "show": true,
+        "values": []
       },
       "yaxes": [
         {
@@ -1277,11 +1320,16 @@
           "logBase": 1,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
+      "dashLength": 10,
+      "dashes": false,
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -1289,7 +1337,14 @@
       "decimals": 2,
       "editable": true,
       "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "unitScale": true
+        },
+        "overrides": []
+      },
       "fill": 1,
+      "fillGradient": 0,
       "grid": {},
       "gridPos": {
         "h": 7,
@@ -1297,6 +1352,7 @@
         "x": 0,
         "y": 36
       },
+      "hiddenSeries": false,
       "id": 14,
       "legend": {
         "alignAsTable": true,
@@ -1313,11 +1369,16 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+      "pluginVersion": "10.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
+      "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
@@ -1326,15 +1387,18 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by (name) (rate(container_network_transmit_bytes_total{image!=\"\",container_label_org_label_schema_group=\"\"}[1m]))",
+          "editorMode": "code",
+          "expr": "sum by (name) (rate(container_network_transmit_bytes_total{image!=\"\",container_label_org_label_schema_group!=\"observability\"}[1m]))",
           "intervalFactor": 10,
           "legendFormat": "{{ name }}",
           "metric": "container_network_transmit_bytes_total",
+          "range": true,
           "refId": "A",
           "step": 10
         }
       ],
       "thresholds": [],
+      "timeRegions": [],
       "title": "Container Network Output",
       "tooltip": {
         "msResolution": true,
@@ -1344,7 +1408,9 @@
       },
       "type": "graph",
       "xaxis": {
-        "show": true
+        "mode": "time",
+        "show": true,
+        "values": []
       },
       "yaxes": [
         {
@@ -1358,7 +1424,10 @@
           "logBase": 1,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     }
   ],
   "refresh": "10s",
@@ -1401,6 +1470,6 @@
   "timezone": "browser",
   "title": "Docker Containers",
   "uid": "ce7df45a-9d34-490c-a2ad-f7615957a0d8",
-  "version": 3,
+  "version": 1,
   "weekStart": ""
 }
