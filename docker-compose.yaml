@@ -7,12 +7,10 @@ networks:
 services:
   ############################################# Visualization ################################################
   grafana:
-    build:
-      context: ./visualization/grafana
-      dockerfile: Dockerfile
+    image: grafana/grafana:10.3.1
     container_name: grafana
     volumes:
-      - ./visualization/grafana:/etc/grafana
+      - ./visualization/grafana/provisioning:/etc/grafana/provisioning
       - ./data/grafana/:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
@@ -26,14 +24,13 @@ services:
       - net
     labels:
       org.label-schema.group: 'observability'
+    user: root
 
   alertmanager:
-    build:
-      context: ./visualization/alertmanager
-      dockerfile: Dockerfile
+    image: prom/alertmanager:v0.26.0
     container_name: alertmanager
     volumes:
-      - ./visualization/grafana:/etc/alertmanager/config
+      - ./visualization/alertmanager/config:/etc/alertmanager/config
       - ./data/alertmanager:/tmp/alertmanager
     command:
       - '--config.file=/etc/alertmanager/config/config.yaml'
@@ -45,12 +42,11 @@ services:
       - net
     labels:
       org.label-schema.group: 'observability'
+    user: root
 
   ############################################ Metrics #######################################################
   prometheus:
-    build:
-      context: ./metrics/prometheus
-      dockerfile: Dockerfile
+    image: prom/prometheus:v2.49.1
     container_name: prometheus
     expose:
       - 9090
@@ -58,9 +54,9 @@ services:
       - net
     volumes:
       - ./metrics/prometheus:/etc/prometheus
-      - ./data/prometheus:/prometheus
+      - ./data/prometheus:/tmp/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--config.file=/etc/prometheus/config/prometheus.yml'
       - '--storage.tsdb.path=/tmp/prometheus'
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
@@ -71,6 +67,7 @@ services:
       org.label-schema.group: 'observability'
     extra_hosts:
       - "host.docker.internal: 172.17.0.1"
+    user: root
 
 
   cadvisor:
@@ -144,9 +141,7 @@ services:
 
   ############################################ Logging #######################################################
   loki:
-    build:
-      context: ./logs/loki
-      dockerfile: Dockerfile
+    image: grafana/loki:2.9.4
     container_name: loki
     privileged: true
     user: root
@@ -154,7 +149,7 @@ services:
       - ./logs/loki:/etc/loki
       - ./data/loki:/tmp/loki
     command:
-      - '-config.file=/etc/loki/loki-config.yaml'
+      - '-config.file=/etc/loki/config/loki-config.yaml'
     restart: always
     expose:
       - 3100
@@ -164,9 +159,7 @@ services:
       org.label-schema.group: 'observability'
 
   syslog-ng:
-    build:
-      context: ./logs/syslog
-      dockerfile: Dockerfile
+    image: linuxserver/syslog-ng:4.1.1
     container_name: syslog-ng
     user: root
     privileged: true
@@ -188,9 +181,7 @@ services:
 
   ############################################ Traces ########################################################
   tempo:
-    build:
-      context: ./traces/tempo
-      dockerfile: Dockerfile
+    image:  grafana/tempo:2.3.1
     container_name: tempo
     privileged: true
     user: root
@@ -198,7 +189,7 @@ services:
       - ./traces/tempo:/etc/tempo
       - ./data/tempo:/tmp/tempo
     command:
-      - "-config.file=/etc/tempo/tempo.yaml"
+      - "-config.file=/etc/tempo/config/tempo.yaml"
     restart: always
     expose:
       - 3200   # tempo
@@ -210,9 +201,7 @@ services:
 
   ############################################ Aggregation ###################################################
   agent:
-    build:
-      context: ./aggregation/agent
-      dockerfile: Dockerfile
+    image: grafana/agent:v0.39.1
     container_name: agent
     privileged: true
     user: root
@@ -220,7 +209,7 @@ services:
       - ./aggregation/agent:/etc/agent
       - ./data/agent:/tmp/agent
     command:
-      - '-config.file=/etc/agent/agent.yaml'
+      - '-config.file=/etc/agent/config/agent.yaml'
     restart: always
     networks:
       - net
@@ -228,14 +217,12 @@ services:
       org.label-schema.group: 'observability'
 
   promtail:
-    build:
-      context: ./aggregation/promtail
-      dockerfile: Dockerfile
+    image: grafana/promtail:2.9.4
     user: root
     privileged: true
     container_name: promtail
     command:
-      - '-config.file=/etc/promtail/promtail.yaml'
+      - '-config.file=/etc/promtail/config/promtail.yaml'
     volumes:
       - ./aggregation/promtail:/etc/promtail
       - /var/log:/var/log
@@ -251,9 +238,7 @@ services:
 
   ############################################# Network #######################################################
   nginx:
-    build:
-      context: ./server/nginx
-      dockerfile: Dockerfile
+    image: nginx:1.25.3-alpine
     container_name: nginx
     ports:
       # grafana
