@@ -26,7 +26,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 16110,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -103,6 +103,9 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -110,10 +113,13 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
-          "unit": "short",
           "unitScale": true
         },
         "overrides": []
@@ -126,10 +132,12 @@
       },
       "id": 16,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -137,9 +145,9 @@
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
-        "textMode": "value_and_name",
-        "wideLayout": true
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "text"
       },
       "pluginVersion": "10.3.1",
       "targets": [
@@ -165,7 +173,7 @@
       ],
       "timeFrom": "24h",
       "title": "Requests Count",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -204,7 +212,7 @@
       },
       "id": 6,
       "options": {
-        "displayMode": "lcd",
+        "displayMode": "gradient",
         "maxVizHeight": 300,
         "minVizHeight": 10,
         "minVizWidth": 0,
@@ -229,12 +237,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "disableTextWrap": false,
-          "editorMode": "builder",
+          "editorMode": "code",
           "exemplar": false,
           "expr": "pulse_http_request_duration_seconds_sum{handler!=\"none\", handler!=\"/metrics\"} / pulse_http_request_duration_seconds_count",
           "format": "heatmap",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
+          "instant": false,
           "interval": "",
           "legendFormat": "{{method}} {{handler}}",
           "range": true,
@@ -243,6 +252,7 @@
         }
       ],
       "title": "Requests Average Duration",
+      "transformations": [],
       "type": "bargauge"
     },
     {
@@ -978,7 +988,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "builder",
-          "expr": "sum by(level) (rate({logger=~\"root\"} [1m]))",
+          "expr": "sum by(level) (rate({logger=~\"Pulse: production\"} [1m]))",
           "legendFormat": "{{type}}",
           "queryType": "range",
           "refId": "A"
@@ -1017,7 +1027,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "builder",
-          "expr": "{logger=~\"root\"} | json | line_format `{{.event}}` |= `Request:`",
+          "expr": "{logger=~\"Pulse: production\"} | json | line_format `{{.event}}` |= `Request:`",
           "hide": false,
           "legendFormat": "",
           "queryType": "range",
@@ -1053,6 +1063,6 @@
   "timezone": "",
   "title": "Pulse Observability",
   "uid": "pulse-observability",
-  "version": 3,
+  "version": 7,
   "weekStart": ""
 }
