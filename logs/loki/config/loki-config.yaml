@@ -3,6 +3,25 @@ auth_enabled: false
 server:
   http_listen_port: 3100
 
+schema_config:
+  configs:
+    - from: 2020-10-24
+      index:
+        prefix: index_
+        period: 24h
+      object_store: gcs
+      schema: v13
+      store: tsdb
+
+storage_config:
+  tsdb_shipper:
+    active_index_directory: /tmp/loki/tsdb-index
+    cache_location: /tmp/loki/tsdb-cache
+    cache_ttl: 24h         # Can be increased for faster performance over longer query periods, uses more disk space
+    shared_store: filesystem
+  filesystem:
+    directory: /tmp/loki/chunks
+
 ingester:
   lifecycler:
     address: 127.0.0.1
@@ -17,27 +36,14 @@ ingester:
   chunk_retain_period: 30s    # Must be greater than index read cache TTL if using an index cache (Default index read cache TTL is 5m)
   max_transfer_retries: 0     # Chunk transfers disabled
 
-schema_config:
-  configs:
-    - from: 2020-10-24
-      store: boltdb-shipper
-      object_store: filesystem
-      schema: v11
-      index:
-        prefix: index_
-        period: 24h
-
-storage_config:
-  boltdb_shipper:
-    active_index_directory: /tmp/loki/boltdb-shipper-active
-    cache_location: /tmp/loki/boltdb-shipper-cache
-    cache_ttl: 24h         # Can be increased for faster performance over longer query periods, uses more disk space
-    shared_store: filesystem
-  filesystem:
-    directory: /tmp/loki/chunks
-
 compactor:
-  working_directory: /tmp/loki/boltdb-shipper-compactor
+  working_directory: /tmp/loki/retention
+  compaction_interval: 10m
+  retention_enabled: true
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 150
+  retention_period: 200h
+  delete_request_store: filesystem
   shared_store: filesystem
 
 limits_config:
@@ -46,10 +52,6 @@ limits_config:
 
 chunk_store_config:
   max_look_back_period: 0s
-
-table_manager:
-  retention_deletes_enabled: false
-  retention_period: 0s
 
 ruler:
   storage:
