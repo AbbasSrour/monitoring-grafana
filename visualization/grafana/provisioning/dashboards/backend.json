@@ -715,11 +715,15 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "code",
-          "expr": "progress",
-          "legendFormat": "__auto",
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "http_requests_inprogress{handler!=\"/metrics\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{handler}}",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         }
       ],
       "title": "Request In Process",
@@ -1026,8 +1030,8 @@
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
-          "editorMode": "builder",
-          "expr": "{logger=~\"Pulse: production\"} | json | line_format `{{.event}}` |= `Request:`",
+          "editorMode": "code",
+          "expr": "{logger=~\"Pulse: production\"} | json |= `Request:` | line_format `{{.status_code}} {{.action}} {{.url}} {{.user_id}} {{.user_email}} {{.user_role}}` | url != `/metrics`",
           "hide": false,
           "legendFormat": "",
           "queryType": "range",
@@ -1063,6 +1067,6 @@
   "timezone": "",
   "title": "Pulse Observability",
   "uid": "pulse-observability",
-  "version": 7,
+  "version": 1,
   "weekStart": ""
 }

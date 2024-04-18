@@ -513,14 +513,18 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "code",
-          "expr": "sum(node_filesystem_free_bytes{fstype=\"ext4\"})",
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum(node_filesystem_free_bytes{mountpoint=\"/\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "interval": "30s",
           "intervalFactor": 1,
           "legendFormat": "",
           "range": true,
           "refId": "A",
-          "step": 30
+          "step": 30,
+          "useBackend": false
         }
       ],
       "timeFrom": "10s",
