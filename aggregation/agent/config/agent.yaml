@@ -1,20 +1,53 @@
+server:
+  log_level: debug
+
+metrics:
+  wal_directory: /tmp/wal
+  global: {}
+  configs:
+    - name: default
+      remote_write:
+        - url: http://prometheus:9090/api/prom/push
+
+logs:
+  positions_directory: /tmp/loki-pos
+  configs:
+    - name: default
+      scrape_configs: []
+      clients:
+        - url: http://loki:3100/loki/api/v1/push
+
 traces:
   configs:
     - name: default
-      receivers:
-        otlp:
-          protocols:
-            grpc:
-              endpoint: "0.0.0.0:4317"
-            http:
-              endpoint: "0.0.0.0:4318"
-        jaeger:
-          protocols:
-            grpc:
       remote_write:
-        - endpoint: "http://localhost:4318"
-          protocol: "http"
-          insecure: true
-      batch:
-        timeout: 5s
-        send_batch_size: 100
+        - url: http://tempo:3200
+      receivers:
+        oltp:
+          protocols:
+            http:
+              cors:
+                allowed_origins:
+                  - "*"
+                max_age: 172800
+                
+integrations:
+  app_agent_receiver_configs:
+    - autoscrape:
+        enable: true
+        metrics_instance: 'default'
+      instance: 'frontend'
+      logs_instance: 'default'
+      traces_instance: 'default'
+      server:
+        host: 0.0.0.0
+        port: 12345
+        api_key: 'secret' # optional, if set, client will be required to provide it via x-api-key header
+        cors_allowed_origins:
+          - '*'
+      logs_labels: # labels to add to loki log record
+        app: frontend # static value
+        kind: # value will be taken from log items. exception, log, measurement, etc
+      logs_send_timeout: 5000
+      sourcemaps:
+        download: true # will download source file, extract source map location,

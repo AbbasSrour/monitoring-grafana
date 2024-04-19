@@ -67,7 +67,6 @@ services:
       - "host.docker.internal: 172.17.0.1"
     user: root
 
-
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.44.0
     container_name: cadvisor
@@ -206,6 +205,10 @@ services:
     volumes:
       - ./aggregation/agent:/etc/agent
       - ./data/agent:/tmp/agent
+    ports:
+      - '12345:12345' # AGENT_PORT
+      - '8027:8027' # AGENT_PORT_APP_RECEIVER
+      - '4317:4317' # TEMPO_PORT_OTLP_RECEIVER
     command:
       - '-config.file=/etc/agent/config/agent.yaml'
     restart: always
