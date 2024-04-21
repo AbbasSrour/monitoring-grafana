@@ -32,7 +32,7 @@ traces:
                 max_age: 172800
                 
 integrations:
-  app_agent_receiver_configs:
+  app_agent_receiver_config:
     - autoscrape:
         enable: true
         metrics_instance: 'default'
