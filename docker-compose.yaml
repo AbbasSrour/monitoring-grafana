@@ -178,7 +178,7 @@ services:
 
   ############################################ Traces ########################################################
   tempo:
-    image:  grafana/tempo:2.4.1
+    image: grafana/tempo:2.4.1
     container_name: tempo
     privileged: true
     user: root
@@ -197,48 +197,48 @@ services:
       org.label-schema.group: 'observability'
 
   ############################################ Aggregation ###################################################
-#  agent:
-#    image: grafana/agent:v0.40.4
-#    container_name: agent
-#    privileged: true
-#    user: root
-#    volumes:
-#      - ./aggregation/agent:/etc/agent
-#      - ./data/agent:/tmp/agent
-#    ports:
-#      - '12345:12345' # AGENT_PORT
-#      - '8027:8027' # AGENT_PORT_APP_RECEIVER
-#      - '4317:4317' # TEMPO_PORT_OTLP_RECEIVER
-#    command:
-#      - '-config.file=/etc/agent/config/agent.yaml'
-#      - '-config.expand-env'
-#      - '-config.enable-read-api'
-#      - '-enable-features=integrations-next'
-#    restart: always
-#    networks:
-#      - net
-#    labels:
-#      org.label-schema.group: 'observability'
+  #  agent:
+  #    image: grafana/agent:v0.40.4
+  #    container_name: agent
+  #    privileged: true
+  #    user: root
+  #    volumes:
+  #      - ./aggregation/agent:/etc/agent
+  #      - ./data/agent:/tmp/agent
+  #    ports:
+  #      - '12345:12345' # AGENT_PORT
+  #      - '8027:8027' # AGENT_PORT_APP_RECEIVER
+  #      - '4317:4317' # TEMPO_PORT_OTLP_RECEIVER
+  #    command:
+  #      - '-config.file=/etc/agent/config/agent.yaml'
+  #      - '-config.expand-env'
+  #      - '-config.enable-read-api'
+  #      - '-enable-features=integrations-next'
+  #    restart: always
+  #    networks:
+  #      - net
+  #    labels:
+  #      org.label-schema.group: 'observability'
 
-#  promtail:
-#    image: grafana/promtail:2.9.4
-#    user: root
-#    privileged: true
-#    container_name: promtail
-#    command:
-#      - '-config.file=/etc/promtail/config/promtail.yaml'
-#    volumes:
-#      - ./aggregation/promtail:/etc/promtail
-#      - /var/log:/var/log
-#      - /var/lib/docker/containers:/var/lib/docker/containers
-#    expose:
-#      - 9080
-#      - 1514
-#    networks:
-#      - net
-#    restart: unless-stopped
-#    labels:
-#      org.label-schema.group: 'observability'
+  #  promtail:
+  #    image: grafana/promtail:2.9.4
+  #    user: root
+  #    privileged: true
+  #    container_name: promtail
+  #    command:
+  #      - '-config.file=/etc/promtail/config/promtail.yaml'
+  #    volumes:
+  #      - ./aggregation/promtail:/etc/promtail
+  #      - /var/log:/var/log
+  #      - /var/lib/docker/containers:/var/lib/docker/containers
+  #    expose:
+  #      - 9080
+  #      - 1514
+  #    networks:
+  #      - net
+  #    restart: unless-stopped
+  #    labels:
+  #      org.label-schema.group: 'observability'
 
   alloy:
     image: grafana/alloy:v1.0.0
@@ -250,20 +250,20 @@ services:
       - --server.http.listen-addr=0.0.0.0:123456
       - --storage.path=/var/lib/alloy/data
     volumes:
-        - ./aggregation/alloy/config:/etc/alloy
-        - ./data/alloy:/tmp/alloy
-        - /var/log:/var/log
-        - /var/lib/docker/containers:/var/lib/docker/containers
+      - ./aggregation/alloy/config:/etc/alloy
+      - ./data/alloy:/tmp/alloy
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers
     ports:
-      - 1514:1514
-      - 12345:12345
-      - 123456:123456
-      - 8027:8027
+      - '1514:1514'
+      - '12345:12345'
+      - '123456:123456'
+      - '8027:8027'
     networks:
       - net
     restart: unless-stopped
     labels:
-      org.label-schema.group:  'observability'
+      org.label-schema.group: 'observability'
 
   ############################################# Network #######################################################
   nginx:
