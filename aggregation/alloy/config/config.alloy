@@ -141,7 +141,7 @@ loki.source.syslog "syslog_ng" {
 	relabel_rules = discovery.relabel.syslog_ng.rules
 	listener {
 		address               = "alloy:1514"
-		protocol              = "TCP"
+		protocol              = "tcp"
 		idle_timeout          = "1m0s"
 		label_structured_data = true
 		labels                = {
@@ -185,18 +185,7 @@ otelcol.processor.transform "otel_prometheus_transformer" {
 }
 
 otelcol.exporter.loki "otel_loki_exporter" {
-	client {
-		endpoint = "http://prometheus:9090/api/v1/write"
-
-		tls {
-			insecure = true
-		}
-		http2_ping_timeout = "0s"
-	}
-
-	retry_on_failure {
-		max_elapsed_time = "1m0s"
-	}
+  forward_to = [loki.write.loki_db.receiver]
 }
 otelcol.processor.attributes "otel_loki_processor" {
   action {
