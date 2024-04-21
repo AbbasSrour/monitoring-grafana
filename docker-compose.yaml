@@ -245,9 +245,9 @@ services:
     user: root
     privileged: true
     container_name: alloy
-    command:
-      - --server.http.listen-addr=0.0.0.0:9080
-      - --storage.path=/var/lib/alloy/data
+#    command:
+#      - --server.http.listen-addr=0.0.0.0:9080
+#      - --storage.path=/var/lib/alloy/data
     volumes:
       - ./aggregation/alloy/config:/etc/alloy
       - ./data/alloy:/tmp/alloy
