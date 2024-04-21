@@ -211,6 +211,9 @@ services:
       - '4317:4317' # TEMPO_PORT_OTLP_RECEIVER
     command:
       - '-config.file=/etc/agent/config/agent.yaml'
+      - '-config.expand-env'
+      - '-config.enable-read-api'
+      - '-enable-features=integrations-next'
     restart: always
     networks:
       - net
