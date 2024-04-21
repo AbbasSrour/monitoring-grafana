@@ -1,41 +1,41 @@
 server:
   log_level: debug
 
-#metrics:
-#  wal_directory: /tmp/wal
-#  global:
-#    scrape_interval: 60s
-#    remote_write:
-#      - url: http://prometheus:9090/api/prom/push
-#  configs:
-#    - name: package
-#      scrape_configs:
-#        - job_name: server
-#          static_configs:
-#            - targets:
-#                - server:8000
+metrics:
+  wal_directory: /tmp/wal
+  global:
+    scrape_interval: 60s
+    remote_write:
+      - url: http://prometheus:9090/api/prom/push
+  configs:
+    - name: package
+      scrape_configs:
+        - job_name: server
+          static_configs:
+            - targets:
+                - server:8000
 
-#logs:
-#  positions_directory: /tmp/loki-pos
-#  configs:
-#    - name: frontend
-#      clients:
-#        - url: http://loki:3100/loki/api/v1/push
-#      positions:
-#        filename: /tmp/loki-pos/client-positions.yaml
-#    - name: server
-#      clients:
-#        - url: http://loki:3100/loki/api/v1/push
-#      positions:
-#        filename: /tmp/loki-pos/server-positions.yaml
-#      scrape_configs:
-#        - job_name: server
-#          static_configs:
-#            - targets:
-#                - 'localhost'
-#              labels:
-#                app: server
-#                __path__: /var/log/server.log
+logs:
+  positions_directory: /tmp/loki-pos
+  configs:
+    - name: frontend
+      clients:
+        - url: http://loki:3100/loki/api/v1/push
+      positions:
+        filename: /tmp/loki-pos/client-positions.yaml
+    - name: server
+      clients:
+        - url: http://loki:3100/loki/api/v1/push
+      positions:
+        filename: /tmp/loki-pos/server-positions.yaml
+      scrape_configs:
+        - job_name: server
+          static_configs:
+            - targets:
+                - 'localhost'
+              labels:
+                app: server
+                __path__: /var/log/server.log
 
 traces:
   configs:
@@ -54,16 +54,16 @@ traces:
 
 integrations:
   app_agent_receiver_configs:
-    - instance: package
-#      autoscrape:
-#        enable: true
-#        metrics_instance: package
+    - autoscrape:
+        enable: true
+        metrics_instance: package
+      instance: package
 
-#      logs_instance: frontend
-#      logs_send_timeout: 5000
-#      logs_labels:
-#        app: frontend
-#        kind: ''
+      logs_instance: frontend
+      logs_send_timeout: 5000
+      logs_labels:
+        app: frontend
+        kind: ''
 
       traces_instance: package
       sourcemaps: # download source map and use it to transform stack trace locations
