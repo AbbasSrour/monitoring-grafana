@@ -246,7 +246,7 @@ services:
     privileged: true
     container_name: alloy
     command:
-      - '-config.file=/etc/alloy/config/config.alloy'
+      - '--config.file=/etc/alloy/config/config.alloy'
     volumes:
         - ./aggregation/alloy:/etc/alloy
         - ./data/alloy:/tmp/alloy
