@@ -22,12 +22,12 @@ logs:
       clients:
         - url: http://loki:3100/loki/api/v1/push
       positions:
-        filename: /tmp/loki-pos/positions.yaml
+        filename: /tmp/loki-pos/client-positions.yaml
     - name: server
       clients:
         - url: http://loki:3100/loki/api/v1/push
       positions:
-        filename: /tmp/loki-pos/positions.yaml
+        filename: /tmp/loki-pos/server-positions.yaml
       scrape_configs:
         - job_name: server
           static_configs:
@@ -54,30 +54,30 @@ traces:
 
 integrations:
   app_agent_receiver_configs:
-    instance: package
-    autoscrape:
-      enable: true
-      metrics_instance: package
+    - autoscrape:
+        enable: true
+        metrics_instance: package
+      instance: package
 
-    logs_instance: frontend
-    logs_end_timeout: 5s
-    logs_send_timeout: 5000
-    logs_labels:
-      app: frontend
-      kind: ''
+      logs_instance: frontend
+#      logs_end_timeout: 5s
+      logs_send_timeout: 5000
+      logs_labels:
+        app: frontend
+        kind: ''
 
-    traces_instance: 'default'
-    sourcemaps: # download source map and use it to transform stack trace locations
-      download: true # will download source file, extract source map location,
+      traces_instance: package
+      sourcemaps: # download source map and use it to transform stack trace locations
+        download: true # will download source file, extract source map location,
 
-    server:
-      host: 0.0.0.0
-      port: 8027
-      api_key: 'secret' # optional, if set, client will be required to provide it via x-api-key header
-      cors_allowed_origins:
-        - '*'
-      max_allowed_message_size: 5e+07
-      rate_limit:
-        enabled: true
-        burstiness: 100
-        rps: 100
+      server:
+        host: 0.0.0.0
+        port: 8027
+        api_key: 'secret' # optional, if set, client will be required to provide it via x-api-key header
+        cors_allowed_origins:
+          - '*'
+#        max_allowed_message_size: 5e+07
+#        rate_limit:
+#          enabled: true
+#          burstiness: 100
+#          rps: 100
