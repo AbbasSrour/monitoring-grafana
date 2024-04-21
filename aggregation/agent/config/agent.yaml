@@ -23,7 +23,7 @@ traces:
       remote_write:
         - endpoint: http://tempo:3200
       receivers:
-        oltp:
+        otlp:
           protocols:
             http:
               cors:
