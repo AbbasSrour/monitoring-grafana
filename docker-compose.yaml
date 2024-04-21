@@ -178,7 +178,7 @@ services:
 
   ############################################ Traces ########################################################
   tempo:
-    image:  grafana/tempo:2.3.1
+    image:  grafana/tempo:2.4.1
     container_name: tempo
     privileged: true
     user: root
