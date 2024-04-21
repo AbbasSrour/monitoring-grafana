@@ -241,7 +241,7 @@ services:
 #      org.label-schema.group: 'observability'
 
   alloy:
-    image: grafana/alloy:1.0
+    image: grafana/alloy:v1.0.0
     user: root
     privileged: true
     container_name: alloy
