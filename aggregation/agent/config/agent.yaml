@@ -40,7 +40,7 @@ integrations:
       logs_instance: 'default'
       traces_instance: 'default'
       server:
-        host: 0.0.0.0
+        host: 127.0.0.1
         port: 12345
         api_key: 'secret' # optional, if set, client will be required to provide it via x-api-key header
         cors_allowed_origins:
