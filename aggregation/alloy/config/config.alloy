@@ -259,7 +259,7 @@ faro.receiver "faro_receiver" {
 	sourcemaps { }
 
 	output {
-		logs    = [otelcol.processor.attributes.otel_loki_processor.input]
+		logs    = [otelcol.exporter.loki.otel_loki_exporter.input]
 		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input]
 	}
 }
