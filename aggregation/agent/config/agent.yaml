@@ -41,7 +41,7 @@ traces:
   configs:
     - name: package
       remote_write:
-        - endpoint: tempo:4317
+        - endpoint: tempo:4318
           insecure: true
       receivers:
         otlp:
