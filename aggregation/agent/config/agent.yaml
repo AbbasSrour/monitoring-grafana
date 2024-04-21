@@ -6,7 +6,7 @@ metrics:
   global:
     scrape_interval: 60s
     remote_write:
-      - url: http://prometheus:9090/api/prom/push
+      - url: http://prometheus:9090/api/v1/write
   configs:
     - name: package
       scrape_configs:
