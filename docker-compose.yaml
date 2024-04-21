@@ -198,7 +198,7 @@ services:
 
   ############################################ Aggregation ###################################################
   agent:
-    image: grafana/agent:v0.39.1
+    image: grafana/agent:v0.40.4
     container_name: agent
     privileged: true
     user: root
