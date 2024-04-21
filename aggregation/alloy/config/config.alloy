@@ -170,7 +170,7 @@ otelcol.exporter.prometheus "otel_prometheus_exporter" {
     resource_to_telemetry_conversion = true
     forward_to = [prometheus.remote_write.prometheus_db.receiver]
 }
-otelcol.processor.transform "otlel_prometheus_transformer" {
+otelcol.processor.transform "otel_prometheus_transformer" {
   error_mode = "ignore"
 
   metric_statements {
