@@ -65,7 +65,7 @@ integrations:
       logs_send_timeout: 5000
       logs_labels:
         app: frontend
-        kind: ''
+        kind:
 
       traces_instance: package
       sourcemaps: # download source map and use it to transform stack trace locations
