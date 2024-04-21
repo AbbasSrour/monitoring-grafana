@@ -13,7 +13,7 @@ metrics:
         - job_name: server
           static_configs:
             - targets:
-                - http://0.0.0.0:12345
+                - server:8000
 
 logs:
   positions_directory: /tmp/loki-pos
