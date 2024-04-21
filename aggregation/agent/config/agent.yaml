@@ -43,6 +43,8 @@ traces:
       remote_write:
         - endpoint: tempo:4318
           insecure: true
+          protocol: http
+
       receivers:
         otlp:
           protocols:
