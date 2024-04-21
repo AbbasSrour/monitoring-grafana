@@ -246,7 +246,7 @@ services:
     privileged: true
     container_name: alloy
     command:
-      - --server.http.listen-addr=0.0.0.0:123456
+      - --server.http.listen-addr=0.0.0.0:9080
       - --storage.path=/var/lib/alloy/data
     volumes:
       - ./aggregation/alloy/config:/etc/alloy
@@ -261,8 +261,8 @@ services:
         published: 12345
         target: 12345
       - protocol: tcp
-        published: 123456
-        target: 123456
+        published: 9080
+        target: 9080
       - protocol: tcp
         published: 8027
         target: 8027
