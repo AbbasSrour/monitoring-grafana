@@ -21,7 +21,7 @@ traces:
   configs:
     - name: default
       remote_write:
-        - url: http://tempo:3200
+        - endpoint: http://tempo:3200
       receivers:
         oltp:
           protocols:
