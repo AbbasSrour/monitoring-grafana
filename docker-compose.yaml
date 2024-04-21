@@ -247,7 +247,7 @@ services:
     container_name: alloy
     command:
       - --config.file=/etc/alloy/config/config.alloy
-      - --server.http.listen-addr=0.0.0.0:12345
+      - --server.http.listen-addr=0.0.0.0:123456
       - --storage.path=/var/lib/alloy/data
     volumes:
         - ./aggregation/alloy/config:/etc/alloy
@@ -257,6 +257,7 @@ services:
     ports:
       - 1514:1514
       - 12345:12345
+      - 123456:123456
       - 8027:8027
     networks:
       - net
