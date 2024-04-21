@@ -57,5 +57,8 @@ overrides:
   ingestion_rate_strategy: local
   ingestion_rate_limit_bytes: 12345
   ingestion_burst_size_bytes: 67890
-  forwarders: [ 'foo' ]
-  metrics_generator_processors: [ service-graphs, span-metrics ]
+  forwarders:
+    - foo
+  metrics_generator_processors:
+    - service-graphs
+    - span-metrics
