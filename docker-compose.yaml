@@ -246,7 +246,6 @@ services:
     privileged: true
     container_name: alloy
     command:
-      - --config.file=/etc/alloy/config/config.alloy
       - --server.http.listen-addr=0.0.0.0:123456
       - --storage.path=/var/lib/alloy/data
     volumes:
