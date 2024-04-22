@@ -15,6 +15,7 @@ prometheus.scrape "backend" {
 	job_name        = "backend"
     scrape_interval = "2m0s"
     scrape_timeout  = "5s"
+    enable_http2    = true
 	targets = [{
         __address__ = "host.docker.internal:8000",
 	}]
