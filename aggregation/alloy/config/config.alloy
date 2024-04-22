@@ -39,3 +39,12 @@ prometheus.scrape "nodeexporter" {
     }]
     forward_to      = [prometheus.remote_write.prometheus_db.receiver]
 }
+prometheus.scrape "cadvisor" {
+    job_name        = "cadvisor"
+    scrape_interval = "15s"
+    scrape_timeout  = "5s"
+    targets = [{
+        __address__ = "cadvisor:8080",
+    }]
+    forward_to      = [prometheus.remote_write.prometheus_db.receiver]
+}
