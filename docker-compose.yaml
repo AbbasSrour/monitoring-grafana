@@ -138,7 +138,7 @@ services:
 
   ############################################ Logging #######################################################
   loki:
-    image: grafana/loki:3.0.0
+    image: grafana/loki:2.9.4
     container_name: loki
     privileged: true
     user: root
