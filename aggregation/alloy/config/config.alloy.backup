@@ -52,6 +52,28 @@ loki.process "containers" {
 	forward_to = [loki.write.loki_db.receiver]
 }
 
+discovery.relabel "syslog_ng" {
+	targets = []
+
+	rule {
+		source_labels = ["__syslog_message_hostname"]
+		target_label  = "host"
+	}
+}
+loki.source.syslog "syslog_ng" {
+	relabel_rules = discovery.relabel.syslog_ng.rules
+	listener {
+		address               = "alloy:51893"
+		protocol              = "tcp"
+		idle_timeout          = "1m0s"
+		label_structured_data = true
+		labels                = {
+			job = "syslog",
+		}
+		max_message_length = 0
+	}
+	forward_to    = [loki.write.loki_db.receiver]
+}
 
 
 

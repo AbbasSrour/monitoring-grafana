@@ -156,27 +156,27 @@ services:
     labels:
       org.label-schema.group: 'observability'
 
-  syslog-ng:
-    image: linuxserver/syslog-ng:4.5.0
-    container_name: syslog-ng
-    user: root
-    privileged: true
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    volumes:
-      - ./logs/syslog/config:/config
-      - /var/log:/var/log
-    networks:
-      - net
-    ports:
-      - 514:5514/udp
-      - 601:6601/tcp
-      - 6514:6514/tcp
-    restart: always
-    labels:
-      org.label-schema.group: 'observability'
+#  syslog-ng:
+#    image: linuxserver/syslog-ng:4.5.0
+#    container_name: syslog-ng
+#    user: root
+#    privileged: true
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - TZ=Etc/UTC
+#    volumes:
+#      - ./logs/syslog/config:/config
+#      - /var/log:/var/log
+#    networks:
+#      - net
+#    ports:
+#      - 514:5514/udp
+#      - 601:6601/tcp
+#      - 6514:6514/tcp
+#    restart: always
+#    labels:
+#      org.label-schema.group: 'observability'
 
   ############################################ Traces ########################################################
   tempo:
