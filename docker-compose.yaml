@@ -166,6 +166,8 @@ services:
       - /var/log:/var/log
     networks:
       - net
+    command:
+      - '-f /etc/syslog-ng/syslog-ng.conf'
     ports:
       - protocol: udp
         published: 514
