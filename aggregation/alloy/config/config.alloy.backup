@@ -78,18 +78,6 @@ loki.source.syslog "syslog_ng" {
 
 
 
-local.file_match "system" {
-	path_targets = [{
-		__address__ = "localhost",
-		__path__    = "/var/log/*.log",
-		job         = "varlogs",
-	}]
-}
-loki.source.file "system" {
-	legacy_positions_file = "/tmp/positions.yaml"
-	targets               = local.file_match.system.targets
-	forward_to            = [loki.write.loki_db.receiver]
-}
 
 
 otelcol.exporter.prometheus "otel_prometheus_exporter" {
