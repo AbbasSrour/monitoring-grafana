@@ -277,6 +277,8 @@ services:
   nginx:
     image: nginx:1.25.3-alpine
     container_name: nginx
+    expose:
+      - 8081 # nodexexporter
     ports:
       # grafana
       - protocol: tcp
@@ -294,10 +296,6 @@ services:
       - protocol: tcp
         published: 4318
         target: 4318
-      # prometheus
-      - protocol: tcp
-        published: 8081
-        target: 8081
     volumes:
       - ./server/nginx:/etc/nginx
     networks:

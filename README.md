@@ -10,3 +10,4 @@
 - [ ] Add Monitoring Dashboard for GCS
 - [ ] Add blob storage in gcs to save logs and metrics
 - [ ] Upgrade to loki v3
+- [ ] Fix Nginx Dashboard
