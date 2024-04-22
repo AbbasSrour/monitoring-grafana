@@ -4,3 +4,8 @@ tracing:
 
 pyroscopedb:
   max_block_duration: 5m
+
+server:
+    http_listen_network: tcp
+    http_listen_address: 0.0.0.0
+    http_listen_port: 4040
