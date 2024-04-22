@@ -4,7 +4,7 @@
 # TODO:
 - [x] Replace Promtail And Grafana Agent with Aloy
 - [ ] Move Alerting to Grafana OnCall
-- [ ] Replace Prometheus with Mimir
+- [X] Replace Prometheus with Mimir
 - [ ] Add frontend dashboards for grafana
 - [ ] Add Google Cloud billing dashboard
 - [ ] Add Monitoring Dashboard for GCS
@@ -13,3 +13,5 @@
 - [ ] Fix Nginx Dashboard
 - [ ] Fix Containers logs
 - [ ] Fix syslog-ng
+- [ ] Add Pyroscope
+- [ ] Fix prometheus dashboard
