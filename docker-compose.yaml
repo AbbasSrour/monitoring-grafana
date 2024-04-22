@@ -166,7 +166,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ./logs/syslog/config:/etc/syslog-ng
+      - ./logs/syslog/config:/config
       - /var/log:/var/log
     networks:
       - net
