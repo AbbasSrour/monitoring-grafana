@@ -1,0 +1,244 @@
+
+prometheus.scrape "prometheus" {
+    job_name        = "prometheus"
+    scrape_interval = "15s"
+    scrape_timeout  = "5s"
+	targets = [{
+        __address__ = "localhost:9090",
+	}]
+    forward_to = [prometheus.remote_write.prometheus_db.receiver]
+}
+prometheus.scrape "nodeexporter" {
+    job_name        = "nodeexporter"
+    scrape_interval = "15s"
+    scrape_timeout  = "5s"
+    targets = [{
+        __address__ = "nodeexporter:9100",
+    }]
+    forward_to      = [prometheus.remote_write.prometheus_db.receiver]
+}
+prometheus.scrape "cadvisor" {
+    job_name        = "cadvisor"
+    scrape_interval = "15s"
+    scrape_timeout  = "5s"
+    targets = [{
+        __address__ = "cadvisor:8080",
+    }]
+    forward_to      = [prometheus.remote_write.prometheus_db.receiver]
+}
+prometheus.scrape "pushgateway" {
+    job_name        = "pushgateway"
+    scrape_interval = "15s"
+    scrape_timeout  = "5s"
+    honor_labels    = true
+    targets = [{
+        __address__ = "pushgateway:9091",
+    }]
+    forward_to      = [prometheus.remote_write.prometheus_db.receiver]
+}
+prometheus.scrape "nginx" {
+    job_name        = "nginx"
+    scrape_interval = "15s"
+    scrape_timeout  = "5s"
+    targets = [{
+        __address__ = "nginxexporter:9113",
+    }]
+    forward_to      = [prometheus.remote_write.prometheus_db.receiver]
+}
+
+
+
+loki.write "loki_db" {
+	endpoint {
+		url = "http://loki:3100/loki/api/v1/push"
+	}
+	external_labels = {}
+}
+
+local.file_match "containers" {
+	path_targets = [{
+		__address__ = "localhost",
+		__path__    = "/var/lib/docker/containers/*/*log",
+		job         = "containerlogs",
+	}]
+}
+loki.source.file "containers" {
+	legacy_positions_file = "/tmp/positions.yaml"
+	targets               = local.file_match.containers.targets
+	forward_to            = [loki.process.containers.receiver]
+}
+loki.process "containers" {
+	stage.json {
+		expressions = {
+			attrs  = "",
+			output = "log",
+			stream = "stream",
+		}
+	}
+
+	stage.json {
+		expressions = {
+			tag = "",
+		}
+		source = "attrs"
+	}
+
+	stage.regex {
+		expression = "(?P<container_name>(?:[^|]*[^|]))"
+		source     = "tag"
+	}
+
+	stage.timestamp {
+		source = "time"
+		format = "RFC3339Nano"
+	}
+
+	stage.labels {
+		values = {
+			container_name = null,
+			stream         = null,
+			tag            = null,
+		}
+	}
+
+	stage.output {
+		source = "output"
+	}
+
+	forward_to = [loki.write.loki_db.receiver]
+}
+
+discovery.relabel "syslog_ng" {
+	targets = []
+
+	rule {
+		source_labels = ["__syslog_message_hostname"]
+		target_label  = "host"
+	}
+}
+loki.source.syslog "syslog_ng" {
+	relabel_rules = discovery.relabel.syslog_ng.rules
+	listener {
+		address               = "alloy:1514"
+		protocol              = "tcp"
+		idle_timeout          = "1m0s"
+		label_structured_data = true
+		labels                = {
+			job = "syslog",
+		}
+		max_message_length = 0
+	}
+	forward_to    = [loki.write.loki_db.receiver]
+}
+
+local.file_match "system" {
+	path_targets = [{
+		__address__ = "localhost",
+		__path__    = "/var/log/*.log",
+		job         = "varlogs",
+	}]
+}
+loki.source.file "system" {
+	legacy_positions_file = "/tmp/positions.yaml"
+	targets               = local.file_match.system.targets
+	forward_to            = [loki.write.loki_db.receiver]
+}
+
+
+otelcol.exporter.prometheus "otel_prometheus_exporter" {
+    resource_to_telemetry_conversion = true
+    forward_to = [prometheus.remote_write.prometheus_db.receiver]
+}
+otelcol.processor.transform "otel_prometheus_transformer" {
+  error_mode = "ignore"
+
+  metric_statements {
+    context = "datapoint"
+
+    statements = []
+  }
+
+  output {
+    metrics = [otelcol.exporter.prometheus.otel_prometheus_exporter.input]
+  }
+}
+
+otelcol.exporter.loki "otel_loki_exporter" {
+  forward_to = [loki.write.loki_db.receiver]
+}
+otelcol.processor.attributes "otel_loki_processor" {
+  action {
+    key = "loki.attribute.labels"
+    action = "insert"
+    value = "event.domain, event.name"
+  }
+
+  action {
+    key = "loki.resource.labels"
+    action = "insert"
+    value = "service.name, service.namespace"
+  }
+
+  output {
+    logs = [otelcol.exporter.loki.otel_loki_exporter.input]
+  }
+}
+
+otelcol.exporter.otlphttp "otel_tempo_exporter" {
+	client {
+		endpoint = "http://tempo:4318"
+
+		tls {
+			insecure = true
+		}
+		http2_ping_timeout = "0s"
+	}
+
+	retry_on_failure {
+		max_elapsed_time = "1m0s"
+	}
+}
+
+otelcol.receiver.otlp "default" {
+	http {
+	    endpoint = "0.0.0.0:12345"
+		cors {
+			allowed_origins = ["*"]
+			max_age         = 172800
+		}
+		include_metadata = true
+	}
+
+	output {
+		metrics = [otelcol.processor.transform.otel_prometheus_transformer.input]
+		logs    = [otelcol.processor.attributes.otel_loki_processor.input]
+		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input]
+	}
+}
+
+faro.receiver "faro_receiver" {
+	extra_log_labels = {
+		app  = "frontend",
+		kind = "",
+	}
+
+	server {
+		listen_address           = "0.0.0.0"
+		listen_port              = 8027
+		cors_allowed_origins     = ["*"]
+		api_key                  = "secret"
+		max_allowed_payload_size = "4MiB786KiB832B"
+
+		rate_limiting {
+			rate       = 100
+			burst_size = 50
+		}
+	}
+
+	sourcemaps { }
+
+	output {
+		logs    = [loki.write.loki_db.receiver]
+		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input]
+	}
+}
