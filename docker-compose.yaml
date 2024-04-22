@@ -157,7 +157,7 @@ services:
       org.label-schema.group: 'observability'
 
   syslog-ng:
-    image: linuxserver/syslog-ng:4.1.1
+    image: linuxserver/syslog-ng:4.5.0
     container_name: syslog-ng
     user: root
     privileged: true
