@@ -161,8 +161,12 @@ services:
     container_name: syslog-ng
     user: root
     privileged: true
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
     volumes:
-      - ./logs/syslog/config/syslog-ng.conf:/config/syslog-ng.conf
+      - ./logs/syslog/config:/config
       - /var/log:/var/log
     networks:
       - net
@@ -173,6 +177,9 @@ services:
       - protocol: tcp
         published: 601
         target: 601
+      - protocol: tcp
+        published: 6514
+        target: 6514
     restart: always
     labels:
       org.label-schema.group: 'observability'
