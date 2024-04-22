@@ -159,12 +159,14 @@ services:
   syslog-ng:
     image: linuxserver/syslog-ng:4.5.0
     container_name: syslog-ng
+    user: root
+    privileged: true
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ./logs/syslog/config:/config
+      - ./logs/syslog/config:/etc/syslog-ng
       - /var/log:/var/log
     networks:
       - net
@@ -251,9 +253,6 @@ services:
     user: root
     privileged: true
     container_name: alloy
-#    command:
-#      - --server.http.listen-addr=0.0.0.0:9080
-#      - --storage.path=/var/lib/alloy/data
     volumes:
       - ./aggregation/alloy/config:/etc/alloy
       - ./data/alloy:/tmp/alloy
