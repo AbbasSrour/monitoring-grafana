@@ -171,15 +171,9 @@ services:
     networks:
       - net
     ports:
-      - protocol: udp
-        published: 514
-        target: 514
-      - protocol: tcp
-        published: 601
-        target: 601
-      - protocol: tcp
-        published: 6514
-        target: 6514
+      - 514:5514/udp
+      - 601:6601/tcp
+      - 6514:6514/tcp
     restart: always
     labels:
       org.label-schema.group: 'observability'
