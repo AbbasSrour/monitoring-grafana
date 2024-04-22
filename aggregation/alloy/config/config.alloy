@@ -5,7 +5,7 @@ logging {
 prometheus.remote_write "prometheus_db" {
 	endpoint {
 		name    = "prometheus"
-		url     = "http://mimir:9009/api/v1/write"
+		url     = "http://mimir:9009/api/v1/push"
 		queue_config { }
 		metadata_config { }
 	}
