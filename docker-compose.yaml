@@ -162,12 +162,10 @@ services:
     user: root
     privileged: true
     volumes:
-      - ./logs/syslog/config:/etc/syslog-ng
+      - ./logs/syslog/config/syslog-ng.conf:/config/syslog-ng.conf
       - /var/log:/var/log
     networks:
       - net
-    entrypoint:
-      - 'syslog-ng -f /etc/syslog-ng/syslog-ng.conf'
     ports:
       - protocol: udp
         published: 514
