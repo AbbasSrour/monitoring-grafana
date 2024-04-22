@@ -67,55 +67,25 @@ loki.write "loki_db" {
 	external_labels = {}
 }
 
-local.file_match "containers" {
-	path_targets = [{
-		__address__ = "localhost",
-		__path__    = "/var/lib/docker/containers/*/*log",
-		job         = "containerlogs",
-	}]
+discovery.relabel "syslog_ng" {
+	targets = []
+
+	rule {
+		source_labels = ["__syslog_message_hostname"]
+		target_label  = "host"
+	}
 }
-loki.source.file "containers" {
-	legacy_positions_file = "/tmp/positions.yaml"
-	targets               = local.file_match.containers.targets
-	forward_to            = [loki.process.containers.receiver]
-}
-loki.process "containers" {
-	stage.json {
-		expressions = {
-			attrs  = "",
-			output = "log",
-			stream = "stream",
+loki.source.syslog "syslog_ng" {
+	relabel_rules = discovery.relabel.syslog_ng.rules
+	listener {
+		address               = "alloy:1514"
+		protocol              = "tcp"
+		idle_timeout          = "1m0s"
+		label_structured_data = true
+		labels                = {
+			job = "syslog",
 		}
+		max_message_length = 0
 	}
-
-	stage.json {
-		expressions = {
-			tag = "",
-		}
-		source = "attrs"
-	}
-
-	stage.regex {
-		expression = "(?P<container_name>(?:[^|]*[^|]))"
-		source     = "tag"
-	}
-
-	stage.timestamp {
-		source = "time"
-		format = "RFC3339Nano"
-	}
-
-	stage.labels {
-		values = {
-			container_name = null,
-			stream         = null,
-			tag            = null,
-		}
-	}
-
-	stage.output {
-		source = "output"
-	}
-
-	forward_to = [loki.write.loki_db.receiver]
+	forward_to    = [loki.write.loki_db.receiver]
 }
