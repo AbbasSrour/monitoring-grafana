@@ -2,8 +2,8 @@
 
 
 # TODO:
-- [ ] Replace Promtail And Grafana Agent with Aloy
-- [ ] Move  Alerting to Grafana OnCall
+- [x] Replace Promtail And Grafana Agent with Aloy
+- [ ] Move Alerting to Grafana OnCall
 - [ ] Replace Prometheus with Mimir
 - [ ] Add frontend dashboards for grafana
 - [ ] Add Google Cloud billing dashboard
