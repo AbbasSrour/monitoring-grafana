@@ -162,7 +162,7 @@ services:
     user: root
     privileged: true
     volumes:
-      - ./logs/syslog:/etc/syslog-ng
+      - ./logs/syslog/config:/etc/syslog-ng
       - /var/log:/var/log
     networks:
       - net
