@@ -255,6 +255,10 @@ services:
       - protocol: tcp
         published: 8027
         target: 8027
+      # pyroscope
+      - protocol: tcp
+        published: 4040
+        target: 4040
     volumes:
       - ./server/nginx:/etc/nginx
     networks:
