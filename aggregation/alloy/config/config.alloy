@@ -79,3 +79,111 @@ loki.source.file "system" {
 	targets               = local.file_match.system.targets
 	forward_to            = [loki.write.loki_db.receiver]
 }
+loki.source.api "loki_push_api" {
+    http {
+        listen_address = "0.0.0.0"
+        listen_port = 9999
+    }
+    labels = {
+    }
+    forward_to = [loki.write.loki_db.receiver]
+}
+
+
+otelcol.exporter.prometheus "otel_prometheus_exporter" {
+    resource_to_telemetry_conversion = true
+    forward_to = [prometheus.remote_write.prometheus_db.receiver]
+}
+otelcol.processor.transform "otel_prometheus_transformer" {
+  error_mode = "ignore"
+
+  metric_statements {
+    context = "datapoint"
+
+    statements = []
+  }
+
+  output {
+    metrics = [otelcol.exporter.prometheus.otel_prometheus_exporter.input]
+  }
+}
+
+otelcol.exporter.loki "otel_loki_exporter" {
+  forward_to = [loki.write.loki_db.receiver]
+}
+otelcol.processor.attributes "otel_loki_processor" {
+  action {
+    key = "loki.attribute.labels"
+    action = "insert"
+    value = "event.domain, event.name"
+  }
+
+  action {
+    key = "loki.resource.labels"
+    action = "insert"
+    value = "service.name, service.namespace"
+  }
+
+  output {
+    logs = [otelcol.exporter.loki.otel_loki_exporter.input]
+  }
+}
+
+otelcol.exporter.otlphttp "otel_tempo_exporter" {
+	client {
+		endpoint = "http://tempo:4318"
+
+		tls {
+			insecure = true
+		}
+		http2_ping_timeout = "0s"
+	}
+
+	retry_on_failure {
+		max_elapsed_time = "1m0s"
+	}
+}
+
+otelcol.receiver.otlp "otel_tempo_receiver" {
+	http {
+	    endpoint = "0.0.0.0:4318"
+		cors {
+			allowed_origins = ["*"]
+			max_age         = 172800
+		}
+		include_metadata = true
+	}
+
+	output {
+		metrics = [otelcol.processor.transform.otel_prometheus_transformer.input]
+		logs    = [otelcol.processor.attributes.otel_loki_processor.input]
+		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input]
+	}
+}
+
+faro.receiver "faro_receiver" {
+	extra_log_labels = {
+		app  = "frontend",
+		kind = "",
+	}
+
+	server {
+		listen_address           = "0.0.0.0"
+		listen_port              = 8027
+		cors_allowed_origins     = ["*"]
+		api_key                  = "secret"
+		max_allowed_payload_size = "4MiB786KiB832B"
+
+		rate_limiting {
+			rate       = 100
+			burst_size = 50
+		}
+	}
+
+	sourcemaps { }
+
+	output {
+		logs    = [loki.write.loki_db.receiver]
+		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input]
+	}
+}

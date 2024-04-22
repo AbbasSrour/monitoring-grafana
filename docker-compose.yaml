@@ -199,49 +199,6 @@ services:
       org.label-schema.group: 'observability'
 
   ############################################ Aggregation ###################################################
-  #  agent:
-  #    image: grafana/agent:v0.40.4
-  #    container_name: agent
-  #    privileged: true
-  #    user: root
-  #    volumes:
-  #      - ./aggregation/agent:/etc/agent
-  #      - ./data/agent:/tmp/agent
-  #    ports:
-  #      - '12345:12345' # AGENT_PORT
-  #      - '8027:8027' # AGENT_PORT_APP_RECEIVER
-  #      - '4317:4317' # TEMPO_PORT_OTLP_RECEIVER
-  #    command:
-  #      - '-config.file=/etc/agent/config/agent.yaml'
-  #      - '-config.expand-env'
-  #      - '-config.enable-read-api'
-  #      - '-enable-features=integrations-next'
-  #    restart: always
-  #    networks:
-  #      - net
-  #    labels:
-  #      org.label-schema.group: 'observability'
-
-  #  promtail:
-  #    image: grafana/promtail:2.9.4
-  #    user: root
-  #    privileged: true
-  #    container_name: promtail
-  #    command:
-  #      - '-config.file=/etc/promtail/config/promtail.yaml'
-  #    volumes:
-  #      - ./aggregation/promtail:/etc/promtail
-  #      - /var/log:/var/log
-  #      - /var/lib/docker/containers:/var/lib/docker/containers
-  #    expose:
-  #      - 9080
-  #      - 1514
-  #    networks:
-  #      - net
-  #    restart: unless-stopped
-  #    labels:
-  #      org.label-schema.group: 'observability'
-
   alloy:
     image: grafana/alloy:v1.0.0
     user: root
@@ -253,17 +210,11 @@ services:
       - /var/log:/var/log
       - /var/lib/docker/containers:/var/lib/docker/containers
     expose:
+      - 12345 # dashboard port
       - 51893 # syslog
-    ports:
-      - protocol: udp
-        published: 12345
-        target: 12345
-      - protocol: tcp
-        published: 9080
-        target: 9080
-      - protocol: tcp
-        published: 8027
-        target: 8027
+      - 4318  # oltp http
+      - 8027  # app receiver
+      - 9999  # logs http
     networks:
       - net
     restart: unless-stopped
@@ -281,18 +232,18 @@ services:
       - protocol: tcp
         published: 5000
         target: 5000
-      # loki
+      # alloy loki receiver
       - protocol: tcp
-        published: 3100
-        target: 3100
-      # tempo
-      - protocol: tcp
-        published: 3200
-        target: 3200
-      # tempo oltp http
+        published: 9999
+        target: 9999
+      # alloy oltp http
       - protocol: tcp
         published: 4318
         target: 4318
+      # alloy app receiver
+      - protocol: tcp
+        published: 8027
+        target: 8027
     volumes:
       - ./server/nginx:/etc/nginx
     networks:
