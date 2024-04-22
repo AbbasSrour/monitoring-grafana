@@ -254,10 +254,9 @@ services:
       - ./data/alloy:/tmp/alloy
       - /var/log:/var/log
       - /var/lib/docker/containers:/var/lib/docker/containers
+    expose:
+      - 1514 # syslog
     ports:
-      - protocol: tcp
-        published: 1514
-        target: 1514
       - protocol: udp
         published: 12345
         target: 12345
