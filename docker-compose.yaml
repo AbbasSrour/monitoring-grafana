@@ -223,7 +223,7 @@ services:
     volumes:
       - ./profiling/pyroscope/config:/etc/pyroscope
     command:
-      - "-config.file=/etc/pyroscope.yml"
+      - "-config.file=/etc/pyroscope/pyroscope.yml"
     expose:
       - 4040
     networks:
