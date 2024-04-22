@@ -259,7 +259,7 @@ services:
       - /var/log:/var/log
       - /var/lib/docker/containers:/var/lib/docker/containers
     expose:
-      - 1514 # syslog
+      - 51893 # syslog
     ports:
       - protocol: udp
         published: 12345

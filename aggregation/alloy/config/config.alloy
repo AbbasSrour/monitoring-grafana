@@ -78,7 +78,7 @@ discovery.relabel "syslog_ng" {
 loki.source.syslog "syslog_ng" {
 	relabel_rules = discovery.relabel.syslog_ng.rules
 	listener {
-		address               = "alloy:1514"
+		address               = "alloy:51893"
 		protocol              = "tcp"
 		idle_timeout          = "1m0s"
 		label_structured_data = true
