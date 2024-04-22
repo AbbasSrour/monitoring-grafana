@@ -49,7 +49,7 @@ services:
     expose:
       - 9009
     networks:
-        - net
+      - net
     volumes:
       - ./metrics/mimir/config:/etc/mimir/config
       - ./data/mimir:/tmp/mimir
@@ -149,27 +149,27 @@ services:
     labels:
       org.label-schema.group: 'observability'
 
-#  syslog-ng:
-#    image: linuxserver/syslog-ng:4.5.0
-#    container_name: syslog-ng
-#    user: root
-#    privileged: true
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#      - TZ=Etc/UTC
-#    volumes:
-#      - ./logs/syslog/config:/config
-#      - /var/log:/var/log
-#    networks:
-#      - net
-#    ports:
-#      - 514:5514/udp
-#      - 601:6601/tcp
-#      - 6514:6514/tcp
-#    restart: always
-#    labels:
-#      org.label-schema.group: 'observability'
+  #  syslog-ng:
+  #    image: linuxserver/syslog-ng:4.5.0
+  #    container_name: syslog-ng
+  #    user: root
+  #    privileged: true
+  #    environment:
+  #      - PUID=1000
+  #      - PGID=1000
+  #      - TZ=Etc/UTC
+  #    volumes:
+  #      - ./logs/syslog/config:/config
+  #      - /var/log:/var/log
+  #    networks:
+  #      - net
+  #    ports:
+  #      - 514:5514/udp
+  #      - 601:6601/tcp
+  #      - 6514:6514/tcp
+  #    restart: always
+  #    labels:
+  #      org.label-schema.group: 'observability'
 
   ############################################ Traces ########################################################
   tempo:
@@ -208,6 +208,24 @@ services:
       - 4318  # oltp http
       - 8027  # app receiver
       - 9999  # logs http
+    networks:
+      - net
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: 'observability'
+
+  ############################################ Profiling #####################################################
+  pyroscope:
+    image: grafana/pyroscope:1.5.0
+    user: root
+    privileged: true
+    container_name: pyroscope
+    volumes:
+      - ./profiling/pyroscope/config:/etc/pyroscope
+    command:
+      - "-config.file=/etc/pyroscope.yml"
+    expose:
+      - 4040
     networks:
       - net
     restart: unless-stopped
