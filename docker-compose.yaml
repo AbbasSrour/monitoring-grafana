@@ -159,8 +159,6 @@ services:
   syslog-ng:
     image: linuxserver/syslog-ng:4.5.0
     container_name: syslog-ng
-    user: root
-    privileged: true
     environment:
       - PUID=1000
       - PGID=1000
