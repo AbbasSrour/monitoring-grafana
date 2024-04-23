@@ -57,6 +57,15 @@ prometheus.scrape "nginx" {
     }]
     forward_to      = [prometheus.remote_write.prometheus_db.receiver]
 }
+prometheus.scrape "oncall" {
+    job_name        = "oncall"
+    scrape_interval = "15s"
+    scrape_timeout  = "5s"
+    targets = [{
+        __address__ = "oncall:8080",
+    }]
+    forward_to      = [prometheus.remote_write.prometheus_db.receiver]
+}
 
 
 

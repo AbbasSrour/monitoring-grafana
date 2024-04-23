@@ -1,4 +1,3 @@
-
 local.file_match "containers" {
 	path_targets = [{
 		__address__ = "localhost",

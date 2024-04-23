@@ -24,24 +24,6 @@ services:
       org.label-schema.group: 'observability'
     user: root
 
-  alertmanager:
-    image: prom/alertmanager:v0.26.0
-    container_name: alertmanager
-    volumes:
-      - ./visualization/alertmanager/config:/etc/alertmanager/config
-      - ./data/alertmanager:/tmp/alertmanager
-    command:
-      - '--config.file=/etc/alertmanager/config/config.yaml'
-      - '--storage.path=/tmp/alertmanager'
-    restart: unless-stopped
-    expose:
-      - 9093
-    networks:
-      - net
-    labels:
-      org.label-schema.group: 'observability'
-    user: root
-
   ############################################ Metrics #######################################################
   mimir:
     image: grafana/mimir:2.12.0
@@ -231,6 +213,93 @@ services:
     restart: unless-stopped
     labels:
       org.label-schema.group: 'observability'
+
+  ####################################### Incident Response & Management #######################################
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: alertmanager
+    volumes:
+      - ./visualization/alertmanager/config:/etc/alertmanager/config
+      - ./data/alertmanager:/tmp/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config/config.yaml'
+      - '--storage.path=/tmp/alertmanager'
+    restart: unless-stopped
+    expose:
+      - 9093
+    networks:
+      - net
+    labels:
+      org.label-schema.group: 'observability'
+    user: root
+
+  oncall_engine:
+    image: grafana/oncall
+    container_name: oncall_engine
+    restart: always
+    expose:
+      - 8080
+    command: sh -c "uwsgi --ini uwsgi.ini"
+    environment: 'production'
+    volumes:
+      - oncall_data:/var/lib/oncall
+    depends_on:
+      oncall_db_migration:
+        condition: service_completed_successfully
+      oncall_redis:
+        condition: service_healthy
+    labels:
+      org.label-schema.group: 'observability'
+
+  oncall_celery:
+    image: grafana/oncall
+    container_name: oncall_celery
+    restart: unless-stopped
+    command: sh -c "./celery_with_exporter.sh"
+    environment: production
+    volumes:
+      - oncall_data:/var/lib/oncall
+    depends_on:
+      oncall_db_migration:
+        condition: service_completed_successfully
+      oncall_redis:
+        condition: service_healthy
+    labels:
+      org.label-schema.group: 'observability'
+  
+  oncall_db_migration:
+    image: grafana/oncall
+    container_name: oncall_db_migration
+    command: python manage.py migrate --noinput
+    environment: production
+    volumes:
+      - oncall_data:/var/lib/oncall
+    depends_on:
+      oncall_redis:
+        condition: service_healthy
+    labels:
+      org.label-schema.group: 'observability'
+
+  oncall_redis:
+    image: redis:7.0.5
+    container_name: oncall_redis
+    restart: always
+    expose:
+      - 6379
+    volumes:
+      - redis_data:/data
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+          cpus: "0.5"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+    labels:
+        org.label-schema.group: 'observability'
 
   ############################################# Network #######################################################
   nginx:
