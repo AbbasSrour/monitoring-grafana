@@ -10,7 +10,7 @@ x-environment: &oncall-environment
   SECRET_KEY: this_secret_should_be_more_that_32_characters # for oncall db migration
   FEATURE_PROMETHEUS_EXPORTER_ENABLED: true
 #  PROMETHEUS_EXPORTER_SECRET: ${PROMETHEUS_EXPORTER_SECRET:-}
-  REDIS_URI: redis://redis:6379/0
+  REDIS_URI: redis://oncall_redis:6379/0
   DJANGO_SETTINGS_MODULE: settings.hobby
   CELERY_WORKER_QUEUE: "default,critical,long,slack,telegram,webhook,retry,celery,grafana"
   CELERY_WORKER_CONCURRENCY: "1"
