@@ -9,7 +9,7 @@ x-environment: &oncall-environment
   BASE_URL: http://localhost:8080
   # for oncall db migration, needs to be in an .env file in the root directory
   SECRET_KEY: this_secret_should_be_more_that_32_characters
-  FEATURE_PROMETHEUS_EXPORTER_ENABLED: true
+  FEATURE_PROMETHEUS_EXPORTER_ENABLED: True
 #  PROMETHEUS_EXPORTER_SECRET: ${PROMETHEUS_EXPORTER_SECRET:-}
   REDIS_URI: redis://oncall_redis:6379/0
   DJANGO_SETTINGS_MODULE: settings.hobby
