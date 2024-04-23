@@ -7,7 +7,8 @@ x-environment: &oncall-environment
   DATABASE_TYPE: sqlite3
   BROKER_TYPE: redis
   BASE_URL: http://localhost:8080
-  SECRET_KEY: this_secret_should_be_more_that_32_characters # for oncall db migration
+  # for oncall db migration, needs to be in an .env file in the root directory
+  SECRET_KEY: this_secret_should_be_more_that_32_characters
   FEATURE_PROMETHEUS_EXPORTER_ENABLED: true
 #  PROMETHEUS_EXPORTER_SECRET: ${PROMETHEUS_EXPORTER_SECRET:-}
   REDIS_URI: redis://oncall_redis:6379/0
@@ -35,7 +36,7 @@ services:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_INSTALL_PLUGINS=grafana-clock-panel
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-oncall-app,grafana-llm-app
     restart: unless-stopped
     expose:
       - 3000

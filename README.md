@@ -3,7 +3,7 @@
 
 # TODO:
 - [x] Replace Promtail And Grafana Agent with Aloy
-- [ ] Move Alerting to Grafana OnCall
+- [X] Add Grafana OnCall
 - [X] Replace Prometheus with Mimir
 - [ ] Add frontend dashboards in grafana
 - [ ] Add Google Cloud billing dashboard
@@ -17,3 +17,7 @@
 - [ ] Fix prometheus dashboard
 - [ ] Link tracing with profiles logs and metrics
 - [ ] A Dockerfile for oncall_engine that auto creates .env file and adds it the container
+- [ ] Add Mongodb dashboard and integration
+- [ ] Move alerting to Grafana Alerts
+- [ ] Explore k6 integration
+- [ ] Add Openapi integration
