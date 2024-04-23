@@ -2,6 +2,27 @@ networks:
   net:
     driver: bridge
 
+
+x-environment: &oncall-environment
+  DATABASE_TYPE: sqlite3
+  BROKER_TYPE: redis
+  BASE_URL: $DOMAIN
+  SECRET_KEY: $SECRET_KEY
+  FEATURE_PROMETHEUS_EXPORTER_ENABLED: ${FEATURE_PROMETHEUS_EXPORTER_ENABLED:-false}
+  PROMETHEUS_EXPORTER_SECRET: ${PROMETHEUS_EXPORTER_SECRET:-}
+  REDIS_URI: redis://redis:6379/0
+  DJANGO_SETTINGS_MODULE: settings.hobby
+  CELERY_WORKER_QUEUE: "default,critical,long,slack,telegram,webhook,retry,celery,grafana"
+  CELERY_WORKER_CONCURRENCY: "1"
+  CELERY_WORKER_MAX_TASKS_PER_CHILD: "100"
+  CELERY_WORKER_SHUTDOWN_INTERVAL: "65m"
+  CELERY_WORKER_BEAT_ENABLED: "True"
+  GRAFANA_API_URL: http://grafana:3000
+
+volumes:
+  oncall_data:
+  redis_data:
+
 services:
   ############################################# Visualization ################################################
   grafana:
@@ -236,11 +257,11 @@ services:
   oncall_engine:
     image: grafana/oncall
     container_name: oncall_engine
+    environment: *oncall-environment
     restart: always
     expose:
       - 8080
     command: sh -c "uwsgi --ini uwsgi.ini"
-    environment: 'production'
     volumes:
       - oncall_data:/var/lib/oncall
     depends_on:
@@ -251,12 +272,13 @@ services:
     labels:
       org.label-schema.group: 'observability'
 
+
   oncall_celery:
     image: grafana/oncall
     container_name: oncall_celery
     restart: unless-stopped
     command: sh -c "./celery_with_exporter.sh"
-    environment: production
+    environment: *oncall-environment
     volumes:
       - oncall_data:/var/lib/oncall
     depends_on:
@@ -271,7 +293,7 @@ services:
     image: grafana/oncall
     container_name: oncall_db_migration
     command: python manage.py migrate --noinput
-    environment: production
+    environment: *oncall-environment
     volumes:
       - oncall_data:/var/lib/oncall
     depends_on:
@@ -299,7 +321,7 @@ services:
       interval: 5s
       retries: 10
     labels:
-        org.label-schema.group: 'observability'
+      org.label-schema.group: 'observability'
 
   ############################################# Network #######################################################
   nginx:
