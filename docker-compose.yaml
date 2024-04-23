@@ -114,7 +114,7 @@ services:
       org.label-schema.group: 'observability'
 
   nginxexporter:
-    image: nginx/nginx-prometheus-exporter:0.10
+    image: nginx/nginx-prometheus-exporter:1.1.0
     container_name: nginx-exporter
     expose:
       - 9113

@@ -26,7 +26,7 @@ datasources:
     isDefault: false
     editable: true
   - name: Pyroscope
-    type: pyroscope
+    type: grafana-pyroscope-datasource
     access: proxy
     orgId: 1
     url: http://pyroscope:4040
