@@ -271,6 +271,8 @@ services:
         condition: service_healthy
     labels:
       org.label-schema.group: 'observability'
+    networks:
+        - net
 
 
   oncall_celery:
@@ -288,6 +290,8 @@ services:
         condition: service_healthy
     labels:
       org.label-schema.group: 'observability'
+    networks:
+        - net
   
   oncall_db_migration:
     image: grafana/oncall
@@ -301,6 +305,8 @@ services:
         condition: service_healthy
     labels:
       org.label-schema.group: 'observability'
+    networks:
+        - net
 
   oncall_redis:
     image: redis:7.0.5
@@ -322,6 +328,8 @@ services:
       retries: 10
     labels:
       org.label-schema.group: 'observability'
+    networks:
+        - net
 
   ############################################# Network #######################################################
   nginx:
