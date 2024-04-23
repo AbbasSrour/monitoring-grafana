@@ -16,3 +16,4 @@
 - [x] Add Pyroscope
 - [ ] Fix prometheus dashboard
 - [ ] Link tracing with profiles logs and metrics
+- [ ] A Dockerfile for oncall_engine that auto creates .env file and adds it the container

@@ -274,7 +274,6 @@ services:
     networks:
         - net
 
-
   oncall_celery:
     image: grafana/oncall
     container_name: oncall_celery
@@ -358,6 +357,10 @@ services:
       - protocol: tcp
         published: 4040
         target: 4040
+      # oncall_engine
+      - protocol: tcp
+        published: 8080
+        target: 8080
     volumes:
       - ./server/nginx:/etc/nginx
     networks:
