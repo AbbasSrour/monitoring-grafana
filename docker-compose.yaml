@@ -218,7 +218,7 @@ services:
     labels:
       org.label-schema.group: 'observability'
     extra_hosts:
-      - "host.docker.internal: 10.200.0.1"
+      - "host.docker.internal: 172.17.0.1"
 
   ############################################ Profiling #####################################################
   pyroscope:

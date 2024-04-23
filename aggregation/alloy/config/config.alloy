@@ -61,6 +61,7 @@ prometheus.scrape "oncall" {
     job_name        = "oncall"
     scrape_interval = "15s"
     scrape_timeout  = "5s"
+    metrics_path   = "/metrics/"
     targets = [{
         __address__ = "host.docker.internal:8080",
     }]
