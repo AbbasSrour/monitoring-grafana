@@ -59,6 +59,7 @@ services:
       - ./data/mimir:/tmp/mimir
     command:
       - '-config.file=/etc/mimir/config/mimir.yml'
+      - '-validation.max-label-names-per-series=32'
     restart: unless-stopped
     labels:
       org.label-schema.group: 'observability'
