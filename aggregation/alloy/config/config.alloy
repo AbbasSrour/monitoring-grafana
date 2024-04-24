@@ -70,13 +70,6 @@ prometheus.scrape "oncall" {
 
 
 
-loki.write "loki_db" {
-	endpoint {
-		url = "http://loki:3100/loki/api/v1/push"
-	}
-	external_labels = {}
-}
-
 local.file_match "system" {
 	path_targets = [{
 		__address__ = "localhost",
@@ -91,6 +84,13 @@ loki.source.file "system" {
 }
 
 
+loki.source.api "loki_push_api" {
+    http {
+        listen_address = "0.0.0.0"
+        listen_port = 9999
+    }
+    forward_to = [loki.write.loki_db.receiver]
+}
 loki.process "default_processor" {
     stage.label_drop {
         values = ["logger"]
@@ -106,12 +106,12 @@ loki.process "default_processor" {
     }
     forward_to = [loki.write.loki_db.receiver]
 }
-loki.source.api "loki_push_api" {
-    http {
-        listen_address = "0.0.0.0"
-        listen_port = 9999
-    }
-    forward_to = [loki.write.loki_db.receiver]
+
+loki.write "loki_db" {
+	endpoint {
+		url = "http://loki:3100/loki/api/v1/push"
+	}
+	external_labels = {}
 }
 
 
