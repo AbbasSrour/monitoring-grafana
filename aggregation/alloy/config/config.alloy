@@ -89,6 +89,23 @@ loki.source.file "system" {
 	targets               = local.file_match.system.targets
 	forward_to            = [loki.write.loki_db.receiver]
 }
+
+
+loki.process "default_processor" {
+  forward_to = [loki.write.loki_db.receiver]
+    stage.label_drop {
+        values = ["logger"]
+    }
+    stage.logfmt {
+        mapping = { "app_name"="","session_id"=""  }
+    }
+    stage.labels {
+          values = {
+            "app_name"= "app_name",
+            "session_id" = "session_id",
+          }
+    }
+}
 loki.source.api "loki_push_api" {
     http {
         listen_address = "0.0.0.0"
@@ -103,7 +120,7 @@ loki.source.api "loki_push_api" {
             "session_id" = "session_id",
           }
     }
-    forward_to = [loki.write.loki_db.receiver]
+    forward_to = [loki.process.default_processor.receiver]
 }
 
 
