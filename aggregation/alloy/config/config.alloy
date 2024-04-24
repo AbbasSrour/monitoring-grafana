@@ -92,7 +92,6 @@ loki.source.file "system" {
 
 
 loki.process "default_processor" {
-  forward_to = [loki.write.loki_db.receiver]
     stage.label_drop {
         values = ["logger"]
     }
@@ -100,11 +99,12 @@ loki.process "default_processor" {
         mapping = { "app_name"="","session_id"=""  }
     }
     stage.labels {
-          values = {
+        values = {
             "app_name"= "app_name",
             "session_id" = "session_id",
-          }
+        }
     }
+    forward_to = [loki.write.loki_db.receiver]
 }
 loki.source.api "loki_push_api" {
     http {
