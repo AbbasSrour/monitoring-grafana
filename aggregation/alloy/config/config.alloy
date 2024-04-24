@@ -154,6 +154,13 @@ otelcol.processor.attributes "otel_loki_processor" {
   }
 }
 
+otelcol.connector.servicegraph "default" {
+  dimensions = ["http.method"]
+  output {
+    metrics = [otelcol.exporter.prometheus.otel_prometheus_exporter.input]
+  }
+}
+
 otelcol.exporter.otlphttp "otel_tempo_exporter" {
 	client {
 		endpoint = "http://tempo:4318"
@@ -182,7 +189,7 @@ otelcol.receiver.otlp "otel_tempo_receiver" {
 	output {
 		metrics = [otelcol.processor.transform.otel_prometheus_transformer.input]
 		logs    = [otelcol.processor.attributes.otel_loki_processor.input]
-		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input]
+		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input, otelcol.connector.servicegraph.default.input]
 	}
 }
 
@@ -209,6 +216,6 @@ faro.receiver "faro_receiver" {
 
 	output {
 		logs    = [loki.process.default_processor.receiver]
-		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input]
+		traces  = [otelcol.exporter.otlphttp.otel_tempo_exporter.input, otelcol.connector.servicegraph.default.input]
 	}
 }
