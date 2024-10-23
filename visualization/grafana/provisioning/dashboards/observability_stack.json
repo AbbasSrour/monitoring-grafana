@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 4,
+  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -356,6 +356,107 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes",
+          "unitScale": true
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 74,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(name) (container_fs_usage_bytes{id!=\"/\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "{{name}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Container Disk Usage",
+      "type": "timeseries"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -380,7 +481,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 6,
@@ -497,7 +598,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 18
       },
       "hiddenSeries": false,
       "id": 7,
@@ -602,7 +703,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 25
       },
       "hiddenSeries": false,
       "id": 73,
@@ -691,7 +792,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 32
       },
       "id": 22,
       "panels": [],
@@ -731,7 +832,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 25
+        "y": 33
       },
       "hiddenSeries": false,
       "id": 18,
@@ -849,7 +950,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 25
+        "y": 33
       },
       "hiddenSeries": false,
       "id": 58,
@@ -1000,7 +1101,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 25
+        "y": 33
       },
       "hiddenSeries": false,
       "id": 60,
@@ -1106,7 +1207,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 32
+        "y": 40
       },
       "hiddenSeries": false,
       "id": 20,
@@ -1211,7 +1312,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 32
+        "y": 40
       },
       "hiddenSeries": false,
       "id": 24,
@@ -1313,7 +1414,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 32
+        "y": 40
       },
       "hiddenSeries": false,
       "id": 26,
@@ -1420,7 +1521,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 39
+        "y": 47
       },
       "hiddenSeries": false,
       "id": 28,
@@ -1530,7 +1631,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 39
+        "y": 47
       },
       "hiddenSeries": false,
       "id": 30,
@@ -1636,7 +1737,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 39
+        "y": 47
       },
       "hiddenSeries": false,
       "id": 32,
@@ -1744,7 +1845,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 46
+        "y": 54
       },
       "hiddenSeries": false,
       "id": 34,
@@ -1879,7 +1980,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 46
+        "y": 54
       },
       "hiddenSeries": false,
       "id": 36,
@@ -1984,7 +2085,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 46
+        "y": 54
       },
       "hiddenSeries": false,
       "id": 38,
@@ -2097,7 +2198,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 53
+        "y": 61
       },
       "hiddenSeries": false,
       "id": 40,
@@ -2205,7 +2306,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 53
+        "y": 61
       },
       "hiddenSeries": false,
       "id": 44,
@@ -2368,7 +2469,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 53
+        "y": 61
       },
       "hiddenSeries": false,
       "id": 42,
@@ -2489,7 +2590,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 60
+        "y": 68
       },
       "hiddenSeries": false,
       "id": 46,
@@ -2595,7 +2696,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 60
+        "y": 68
       },
       "hiddenSeries": false,
       "id": 48,
@@ -2702,7 +2803,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 60
+        "y": 68
       },
       "hiddenSeries": false,
       "id": 50,
@@ -2807,7 +2908,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 67
+        "y": 75
       },
       "hiddenSeries": false,
       "id": 56,
@@ -2907,7 +3008,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 67
+        "y": 75
       },
       "hiddenSeries": false,
       "id": 10,
@@ -3006,7 +3107,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 67
+        "y": 75
       },
       "hiddenSeries": false,
       "id": 11,
@@ -3110,7 +3211,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 74
+        "y": 82
       },
       "hiddenSeries": false,
       "id": 62,
@@ -3216,7 +3317,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 74
+        "y": 82
       },
       "hiddenSeries": false,
       "id": 64,
@@ -3322,7 +3423,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 74
+        "y": 82
       },
       "hiddenSeries": false,
       "id": 66,
@@ -3427,7 +3528,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 81
+        "y": 89
       },
       "hiddenSeries": false,
       "id": 68,
@@ -3532,7 +3633,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 81
+        "y": 89
       },
       "hiddenSeries": false,
       "id": 70,
@@ -3650,7 +3751,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 81
+        "y": 89
       },
       "hiddenSeries": false,
       "id": 72,
@@ -3768,6 +3869,6 @@
   "timezone": "browser",
   "title": "Observability Stack",
   "uid": "fb3485b4-3dfa-4c96-a870-1696e24c7d14",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
