@@ -2,7 +2,6 @@ networks:
   net:
     driver: bridge
 
-
 x-environment: &oncall-environment
   DATABASE_TYPE: sqlite3
   BROKER_TYPE: redis
